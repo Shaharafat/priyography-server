@@ -7,7 +7,9 @@
  *
  */
 import express from 'express';
-import { forgotPassword, login, register, resetPassword } from '../controllers/user.js';
+import { forgotPassword, login, register, resetPassword, updateRole } from '../controllers/user.js';
+import { isAdmin } from '../middlewares/admin.js';
+import { isAuthenticated } from '../middlewares/auth.js';
 import validate from '../middlewares/validate.js';
 import { validateUser } from '../models/user.js';
 
@@ -23,6 +25,9 @@ router.post('/forgotpassword', forgotPassword);
 
 // reset password
 router.put('/resetpassword/:resetToken', resetPassword);
+
+// update role
+router.patch('/updateRole/:userId', [isAuthenticated, isAdmin], updateRole);
 
 // export router
 export default router;

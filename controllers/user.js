@@ -151,3 +151,35 @@ export const resetPassword = async (req, res, next) => {
     next(error);
   }
 };
+
+// ✔️ update user role
+export const updateRole = async (req, res, next) => {
+  progressMessage('Request to change user role');
+
+  const { userId } = req.params;
+  const { role } = req.body;
+  let user;
+
+  // check user
+  try {
+    user = await User.findOne({ _id: userId });
+    if (!user) {
+      errorMessage('No user found with this id.');
+      return next(new ErrorResponse(404, 'No user found with this id.'));
+    }
+  } catch (error) {
+    errorMessage('Error when finding user.');
+    next(error);
+  }
+
+  // update
+  try {
+    user.role = role; // change role
+    user = await user.save();
+    successMessage('User role updated');
+    res.status(200).json({ success: true, message: 'User updated.' });
+  } catch (error) {
+    errorMessage('Error while updating user.');
+    next(error);
+  }
+};

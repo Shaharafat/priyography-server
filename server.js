@@ -11,6 +11,7 @@ import errorMiddleware from './middlewares/error.js';
 import userRouter from './routes/users.js';
 import reviewRouter from './routes/reviews.js';
 import serviceRouter from './routes/services.js';
+import orderRouter from './routes/orders.js';
 
 // load .env files
 dotenv.config();
@@ -27,6 +28,7 @@ app.use(express.json({ limit: '30mb' }));
 app.use('/users', userRouter);
 app.use('/reviews', reviewRouter);
 app.use('/services', serviceRouter);
+app.use('/orders', orderRouter);
 
 // error middleware
 app.use(errorMiddleware);

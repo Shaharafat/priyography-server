@@ -27,8 +27,7 @@ router.get('/', async (req, res, next) => {
     successMessage('Fetched all services');
     res.status(200).json({
       success: true,
-      message: 'Fetched all services',
-      data: services,
+      services,
     });
   } catch (error) {
     errorMessage('Fetching services failed');

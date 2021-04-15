@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    default: 'user',
+    default: 'customer',
   },
   passwordResetToken: { type: String },
   passwordResetTimeout: { type: Date },
