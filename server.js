@@ -7,9 +7,10 @@ import joiObjectId from 'joi-objectid';
 import initialiseDB from './db/dbConfig.js';
 import { debugServer } from './helpers/debugHelpers.js';
 import errorMiddleware from './middlewares/error.js';
-import reviewRouter from './routes/reviews.js';
 // import routes
 import userRouter from './routes/users.js';
+import reviewRouter from './routes/reviews.js';
+import serviceRouter from './routes/services.js';
 
 // load .env files
 dotenv.config();
@@ -25,6 +26,7 @@ app.use(express.json({ limit: '30mb' }));
 
 app.use('/users', userRouter);
 app.use('/reviews', reviewRouter);
+app.use('/services', serviceRouter);
 
 // error middleware
 app.use(errorMiddleware);

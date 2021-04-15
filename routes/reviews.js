@@ -8,6 +8,7 @@
  */
 import express from 'express';
 import { errorMessage, progressMessage, successMessage } from '../helpers/debugHelpers.js';
+import { isAuthenticated } from '../middlewares/auth.js';
 import validate from '../middlewares/validate.js';
 import { Review, validateReview } from '../models/review.js';
 import ErrorResponse from '../utils/errorResponse.js';
@@ -31,7 +32,7 @@ router.get('/', async (req, res, next) => {
 });
 
 // validate and add new review
-router.post('/add', validate(validateReview), async (req, res, next) => {
+router.post('/add', [isAuthenticated, validate(validateReview)], async (req, res, next) => {
   progressMessage('User requested to add a review.');
 
   // TODO => get username from req.body

@@ -13,7 +13,7 @@ import mongoose from 'mongoose';
 const reviewSchema = new mongoose.Schema(
   {
     userName: { type: String, required: true },
-    reviewText: { type: String, maxlength: 120, required: true },
+    reviewText: { type: String, minlength: 20, maxlength: 120, required: true },
     stars: { type: Number, required: true },
   },
   { timestamps: true }
@@ -23,7 +23,7 @@ const reviewSchema = new mongoose.Schema(
 export const validateReview = (review) => {
   const schema = Joi.object({
     userName: Joi.string().required(),
-    reviewText: Joi.string().max(120).required(),
+    reviewText: Joi.string().min(20).max(120).required(),
     stars: Joi.number().min(1).max(5).required(),
   });
 
