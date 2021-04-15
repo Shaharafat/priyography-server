@@ -7,7 +7,13 @@
  *
  */
 import express from 'express';
-import { forgotPassword, login, register, resetPassword, updateRole } from '../controllers/user.js';
+import {
+  forgotPassword,
+  login,
+  register,
+  resetPassword,
+  updateRole
+} from '../controllers/users.js';
 import { isAdmin } from '../middlewares/admin.js';
 import { isAuthenticated } from '../middlewares/auth.js';
 import validate from '../middlewares/validate.js';
