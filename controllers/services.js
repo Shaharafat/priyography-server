@@ -9,6 +9,7 @@
 
 import { errorMessage, progressMessage, successMessage } from '../helpers/debugHelpers.js';
 import { Service } from '../models/service.js';
+import { cloudinary } from '../utils/cloudinary.js';
 import ErrorResponse from '../utils/errorResponse.js';
 
 // ✔️ get all services
@@ -65,5 +66,22 @@ export const deleteService = async (req, res, next) => {
   } catch (error) {
     errorMessage('Couldn"t delete the service.');
     next(new ErrorResponse(500, 'Couldn"t delete the service.'));
+  }
+};
+
+// ✔️ image upload with cloudinary
+export const uploadImageToCloudinary = async (req, res, next) => {
+  progressMessage('Requested to upload image on cloudinary.');
+
+  const { imageBlob } = req.body;
+  try {
+    const response = await cloudinary.uploader.upload(imageBlob, {
+      upload_preset: 'priyography',
+    });
+    successMessage('Image upload successfull.');
+    res.status(200).json({ success: true, message: 'Image uploaded', response });
+  } catch (error) {
+    errorMessage('Uploading image failed.');
+    next(new ErrorResponse(500, 'Image Upload failed'));
   }
 };

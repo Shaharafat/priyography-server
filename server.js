@@ -23,7 +23,7 @@ Joi.objectId = joiObjectId(Joi);
 const app = express();
 
 app.use(cors());
-app.use(express.json({ limit: '30mb' }));
+app.use(express.json({ limit: '50mb' }));
 
 app.use('/users', userRouter);
 app.use('/reviews', reviewRouter);

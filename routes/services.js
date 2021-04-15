@@ -7,7 +7,12 @@
  *
  */
 import express from 'express';
-import { createService, deleteService, getAllServices } from '../controllers/services.js';
+import {
+  createService,
+  deleteService,
+  getAllServices,
+  uploadImageToCloudinary
+} from '../controllers/services.js';
 import { isAdmin } from '../middlewares/admin.js';
 import { isAuthenticated } from '../middlewares/auth.js';
 import validate from '../middlewares/validate.js';
@@ -23,6 +28,9 @@ router.post('/addService', [isAuthenticated, isAdmin, validate(validateService)]
 
 // delete a service
 router.delete('/delete/:serviceId', [isAuthenticated, isAdmin], deleteService);
+
+// upload an image
+router.post('/uploadImage', [isAuthenticated, isAdmin], uploadImageToCloudinary);
 
 // export
 export default router;
