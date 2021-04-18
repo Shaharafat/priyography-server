@@ -8,7 +8,13 @@
  */
 // dependencies
 import express from 'express';
-import { changeStatus, getAllOrders, getUsersOrders, placeOrder } from '../controllers/orders.js';
+import {
+  changeStatus,
+  getAllOrders,
+  getOrderByDate,
+  getUsersOrders,
+  placeOrder
+} from '../controllers/orders.js';
 import { isAdmin } from '../middlewares/admin.js';
 import { isAuthenticated } from '../middlewares/auth.js';
 import validate from '../middlewares/validate.js';
@@ -21,6 +27,9 @@ router.get('/', [isAuthenticated, isAdmin], getAllOrders);
 
 // show specific user's orders
 router.get('/:userId', isAuthenticated, getUsersOrders);
+
+// search order by event date
+router.post('/date', getOrderByDate);
 
 // create and order
 router.post('/placeOrder', [isAuthenticated, validate(validateOrder)], placeOrder);

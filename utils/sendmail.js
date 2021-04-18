@@ -21,7 +21,7 @@ const sendEmail = ({ to, subject, message }) => {
     from: process.env.EMAIL_FROM,
     to,
     subject,
-    html: message,
+    html: message
   };
 
   return sgmail.send(msg); // send mail

@@ -9,6 +9,7 @@
 import express from 'express';
 import {
   forgotPassword,
+  getAllUsers,
   login,
   register,
   resetPassword,
@@ -20,6 +21,10 @@ import validate from '../middlewares/validate.js';
 import { validateUser } from '../models/user.js';
 
 const router = express.Router();
+
+// get all users
+router.get('/', [isAuthenticated, isAdmin], getAllUsers);
+
 // create new user
 router.post('/register', validate(validateUser), register);
 

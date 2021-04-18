@@ -11,6 +11,7 @@ import {
   createService,
   deleteService,
   getAllServices,
+  getSingleService,
   uploadImageToCloudinary
 } from '../controllers/services.js';
 import { isAdmin } from '../middlewares/admin.js';
@@ -22,6 +23,9 @@ const router = express.Router();
 
 // get all services
 router.get('/', getAllServices);
+
+// get single service
+router.get('/:serviceId', getSingleService);
 
 // add new service
 router.post('/addService', [isAuthenticated, isAdmin, validate(validateService)], createService);

@@ -16,24 +16,24 @@ const orderSchema = new mongoose.Schema(
     eventDate: { type: Date, required: true },
     cardNo: {
       type: Number,
-      min: 1000000000000000,
-      max: 9999999999999999,
-      required: true,
+      min: 1000,
+      max: 9999,
+      required: true
     },
     service: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Service',
-      required: true,
+      required: true
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: true
     },
     status: {
       type: String,
-      default: 'pending',
-    },
+      default: 'pending'
+    }
   },
   { timestamps: true }
 );
@@ -42,10 +42,10 @@ const orderSchema = new mongoose.Schema(
 export const validateOrder = (order) => {
   const schema = Joi.object({
     eventDate: Joi.date().required(),
-    cardNo: Joi.number().min(1000000000000000).max(9999999999999999).required(),
+    cardNo: Joi.number().min(1000).max(9999).required(),
     service: Joi.objectId().required(),
     user: Joi.objectId().required(),
-    userName: Joi.string(),
+    userName: Joi.string()
   });
 
   const { error } = schema.validate(order);

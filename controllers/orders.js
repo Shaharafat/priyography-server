@@ -17,7 +17,10 @@ export const getAllOrders = async (req, res, next) => {
   progressMessage('Getting all ordres.');
 
   try {
-    const orders = await Order.find().sort('-createdAt');
+    const orders = await Order.find()
+      .populate('user', 'firstName email -_id')
+      .populate('service', 'name price -_id')
+      .sort('-createdAt');
 
     successMessage('Fetched all orders.');
     res.status(200).json({ success: true, orders });
@@ -69,7 +72,7 @@ export const placeOrder = async (req, res, next) => {
       eventDate,
       cardNo,
       service,
-      user,
+      user
     });
     order = await order.save(); // place order
 
@@ -105,6 +108,25 @@ export const changeStatus = async (req, res, next) => {
 
     successMessage('Status updated');
     res.status(200).json({ success: true, message: 'Status updated', order });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ✔️ search by date
+export const getOrderByDate = async (req, res, next) => {
+  progressMessage('searching an order by date');
+  const { date } = req.body;
+
+  try {
+    const order = await Order.find({ eventDate: date });
+    if (order.length) {
+      errorMessage('We have an event that day');
+      return next(new ErrorResponse(400, 'We have an event that day.'));
+    }
+
+    successMessage('You can book that day.');
+    res.status(200).json({ success: true });
   } catch (error) {
     next(error);
   }

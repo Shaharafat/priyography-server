@@ -8,6 +8,7 @@
  */
 
 import { errorMessage, progressMessage, successMessage } from '../helpers/debugHelpers.js';
+import { Order } from '../models/order.js';
 import { Service } from '../models/service.js';
 import { cloudinary } from '../utils/cloudinary.js';
 import ErrorResponse from '../utils/errorResponse.js';
@@ -23,11 +24,29 @@ export const getAllServices = async (req, res, next) => {
     successMessage('Fetched all services');
     res.status(200).json({
       success: true,
-      services,
+      services
     });
   } catch (error) {
     errorMessage('Fetching services failed');
     next(new ErrorResponse(500, 'Couldn"t fetch services'));
+  }
+};
+// ✔️ get single service
+export const getSingleService = async (req, res, next) => {
+  progressMessage('Requesting to get single service.');
+  const { serviceId } = req.params;
+
+  try {
+    const service = await Service.findOne({ _id: serviceId });
+    if (!service) {
+      errorMessage('No service found with thid id.');
+      return next(new ErrorResponse(404, 'No service found with thid id'));
+    }
+
+    successMessage('Service found.');
+    res.status(200).json({ success: true, service });
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -40,13 +59,13 @@ export const createService = async (req, res, next) => {
     name,
     serviceDetails,
     price,
-    imageUrl,
+    imageUrl
   });
 
   try {
     service = await service.save();
     successMessage('Service added.');
-    res.status(200).json({ success: true, message: 'Service added', data: service });
+    res.status(200).json({ success: true, message: 'Service added', service });
   } catch (error) {
     errorMessage('Service creation failed.');
     next(new ErrorResponse(500, 'Couldn"t create service.'));
@@ -58,6 +77,23 @@ export const deleteService = async (req, res, next) => {
   progressMessage('Requesting to delete a service.');
 
   const { serviceId } = req.params;
+
+  // ! ============= this section is temporary
+  try {
+    const order = await Order.find({ service: { _id: serviceId } });
+    if (order.length) {
+      return next(
+        new ErrorResponse(
+          500,
+          'This service has a pending order. For now you can"t delete this. We will resolve this soon. To check delete a service works or not, try removing a service which is not ordered.'
+        )
+      );
+    }
+  } catch (error) {
+    next(error);
+  }
+  // ! ============= this section is temporary
+
   try {
     await Service.findByIdAndRemove(serviceId);
 
@@ -76,7 +112,7 @@ export const uploadImageToCloudinary = async (req, res, next) => {
   const { imageBlob } = req.body;
   try {
     const response = await cloudinary.uploader.upload(imageBlob, {
-      upload_preset: 'priyography',
+      upload_preset: 'priyography'
     });
     successMessage('Image upload successfull.');
     res.status(200).json({ success: true, message: 'Image uploaded', response });

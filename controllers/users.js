@@ -20,6 +20,20 @@ const sendAuthToken = (user, statusCode, res) => {
   successMessage('Logged in successly and Auth token sent.');
 };
 
+export const getAllUsers = async (req, res, next) => {
+  progressMessage('Request to get all users.');
+
+  try {
+    const users = await User.find().select('-password').sort('-createdAt');
+
+    successMessage('User fetched successfully');
+    res.status(200).json({ success: true, users });
+  } catch (error) {
+    errorMessage('User fethching failed.');
+    next(error);
+  }
+};
+
 // ✔️ register user controller
 export const register = async (req, res, next) => {
   const { firstName, lastName, username, email, password } = req.body;
@@ -30,7 +44,7 @@ export const register = async (req, res, next) => {
     lastName,
     username,
     email,
-    password,
+    password
   });
 
   try {
@@ -95,7 +109,7 @@ export const forgotPassword = async (req, res, next) => {
   const options = {
     to: userEmail,
     subject: 'Reset noteit passowrd',
-    message,
+    message
   };
 
   try {
@@ -105,7 +119,7 @@ export const forgotPassword = async (req, res, next) => {
     successMessage('Mail sent.');
     res.status(200).json({
       success: true,
-      message: 'Password reset mail sent. Reset link will active next 10 minutes',
+      message: 'Password reset mail sent. Reset link will active next 10 minutes'
     });
   } catch (error) {
     // reset this two fields
@@ -129,7 +143,7 @@ export const resetPassword = async (req, res, next) => {
   try {
     const user = await User.findOne({
       passwordResetToken: hashedToken,
-      passwordResetTimeout: { $gt: Date.now() },
+      passwordResetTimeout: { $gt: Date.now() }
     });
 
     if (!user) {
@@ -144,7 +158,7 @@ export const resetPassword = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: 'Password reset successful.',
-      token: user.generateAuthToken(),
+      token: user.generateAuthToken()
     });
     successMessage('Password reset successful and auth token sent.');
   } catch (error) {

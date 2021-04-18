@@ -35,7 +35,7 @@ export const createReview = async (req, res, next) => {
   let review = new Review({
     userName,
     reviewText,
-    stars,
+    stars
   });
 
   try {

@@ -13,44 +13,47 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { errorMessage, progressMessage } from '../helpers/debugHelpers.js';
 
-const userSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    minlength: 3,
-    maxlength: 50,
-    required: true,
+const userSchema = new mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      minlength: 3,
+      maxlength: 50,
+      required: true
+    },
+    lastName: {
+      type: String,
+      minlength: 3,
+      maxlength: 50,
+      required: true
+    },
+    username: {
+      type: String,
+      minlength: 3,
+      maxlength: 50,
+      required: true,
+      unique: true
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    password: {
+      type: String,
+      minlength: 8,
+      maxlength: 1024,
+      required: true
+    },
+    role: {
+      type: String,
+      default: 'customer'
+    },
+    passwordResetToken: { type: String },
+    passwordResetTimeout: { type: Date }
   },
-  lastName: {
-    type: String,
-    minlength: 3,
-    maxlength: 50,
-    required: true,
-  },
-  username: {
-    type: String,
-    minlength: 3,
-    maxlength: 50,
-    required: true,
-    unique: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    minlength: 8,
-    maxlength: 1024,
-    required: true,
-  },
-  role: {
-    type: String,
-    default: 'customer',
-  },
-  passwordResetToken: { type: String },
-  passwordResetTimeout: { type: Date },
-});
+  { timestamps: true }
+);
 
 // hash password before saving
 userSchema.pre('save', async function (next) {
@@ -84,7 +87,11 @@ userSchema.methods.matchPassword = function (password) {
 userSchema.methods.generateAuthToken = function () {
   progressMessage('Creating jwt token.');
 
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
+  return jwt.sign(
+    { user: { id: this._id, name: this.firstName, role: this.role, email: this.email } },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRE }
+  );
 };
 
 userSchema.methods.generateResetToken = function () {
@@ -116,7 +123,7 @@ export const validateUser = (user) => {
       .max(1024)
       .regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/)
       .message('password must contain atleast 1 capital letter, 1 small letter and 1 digit')
-      .required(),
+      .required()
   });
 
   // validate schema

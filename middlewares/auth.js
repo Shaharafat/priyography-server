@@ -17,8 +17,7 @@ export const isAuthenticated = async (req, res, next) => {
   progressMessage('Checking user is authenticated or not.');
 
   let token;
-  console.log(req.headers);
-  if (req.headers?.x_auth_token?.startsWith('bearer')) {
+  if (req.headers?.x_auth_token?.startsWith('Bearer')) {
     token = req.headers.x_auth_token.split(' ')[1];
     progressMessage('jwt token found.');
   } else {
@@ -31,7 +30,7 @@ export const isAuthenticated = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     // find user
-    const user = await User.findOne({ _id: decoded.id });
+    const user = await User.findOne({ _id: decoded.user.id });
     if (!user) {
       errorMessage('No user found with this id.');
       return next(new ErrorResponse(401, 'No user found when authorizing'));
